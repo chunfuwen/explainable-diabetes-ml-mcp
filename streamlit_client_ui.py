@@ -1,6 +1,7 @@
 import streamlit as st
 import asyncio
 import json
+import os
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langgraph.prebuilt import ToolNode
@@ -47,7 +48,16 @@ st.markdown("""
 def initialize_system():
     """Initialize the MCP client and LLM system"""
     try:
-        llm = ChatOllama(model="gpt-oss:latest", base_url="http://localhost:11434")
+        api_key = os.environ.get("OLLAMA_API_KEY", "").strip()
+        if not api_key:
+            st.error("Set OLLAMA_API_KEY environment variable. Get it at https://ollama.com/cloud")
+            return None, None
+        llm = ChatOllama(
+            model="gpt-oss:120b-cloud",
+            base_url="https://ollama.com",
+            client_kwargs={"headers": {"Authorization": f"Bearer {api_key}"}},
+            temperature=0.7
+        )
         
         client = MultiServerMCPClient({
             "diabetes_server": {

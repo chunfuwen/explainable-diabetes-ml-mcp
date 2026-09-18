@@ -5,7 +5,7 @@ from functions import explain_diabetes_risk,predict_diabetes_risk
 import json 
 
 try:
-    mcp = FastMCP("Predict Diabetes Server", host="0.0.0.0", port=8080)
+    mcp = FastMCP("Predict Diabetes Server")
 except Exception as e:
     print(f"Failed to initialize FastMCP: {e}")
     raise
@@ -148,7 +148,7 @@ def get_model_information() -> str:
 if __name__ == "__main__":
     try:
         print("Launching MCP server with Diabetes prediction Tool...")
-        mcp.run("streamable-http")
+        mcp.run("streamable-http", host="0.0.0.0", port=8080)
     except Exception as e:
         print(f"Failed to run MCP server: {e}")
         raise
